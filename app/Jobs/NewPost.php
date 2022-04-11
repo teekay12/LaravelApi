@@ -36,8 +36,8 @@ class NewPost implements ShouldQueue
     {
         $request = $this->request;
         $data = [
-            'title' => $this->data->title,
-            'description' => $this->data->description,
+            'title' => $this->request->title,
+            'description' => $this->request->description,
         ];
         $recipients = $this->emails;
 
