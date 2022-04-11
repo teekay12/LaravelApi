@@ -6,7 +6,8 @@ use App\Models\Post;
 use App\Services\InputValidator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Mail\NewPost;
+use App\Jobs\NewPost;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -55,7 +56,7 @@ class PostController extends Controller
 
             $emails = InputValidator::getEmails($websiteId);
             if($emails != null){
-                Mail::to($emails)->send(new NewPost($order));
+                NewPost::dispatch($emails, $request)->delay();
             }
 
             return $data;
