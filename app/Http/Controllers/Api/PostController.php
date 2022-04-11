@@ -55,8 +55,13 @@ class PostController extends Controller
             ]);
 
             $emails = InputValidator::getEmails($websiteId);
+            $input = [
+                'title' => $request->title,
+                'description' => $request->description
+            ];
+
             if($emails != null){
-                NewPost::dispatch($emails, $request)->delay();
+                NewPost::dispatch($emails, $input)->delay(now());
             }
 
             return $data;

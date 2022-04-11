@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,16 +14,16 @@ class NewPost implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $emails;
-    protected $request;
+    protected $inputs;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($emails, $request)
+    public function __construct($emails, $input)
     {
         $this->emails = $emails;
-        $this->request = $request;
+        $this->inputs = $input;
     }
 
     /**
@@ -34,10 +33,10 @@ class NewPost implements ShouldQueue
      */
     public function handle()
     {
-        $request = $this->request;
+        $inputs = $this->inputs;
         $data = [
-            'title' => $this->request->title,
-            'description' => $this->request->description,
+            'title' => $inputs['title'],
+            'description' => $inputs['description'],
         ];
         $recipients = $this->emails;
 
