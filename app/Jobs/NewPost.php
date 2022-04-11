@@ -40,7 +40,7 @@ class NewPost implements ShouldQueue
         ];
         $recipients = $this->emails;
 
-        Mail::send('emails.newpost', $input, function ($message) use ($data, $recipients) {
+        Mail::send('emails.newpost', $data, function ($message) use ($data, $recipients) {
             $message->to($recipients);
             $message->subject("New Post Alert");
         });
