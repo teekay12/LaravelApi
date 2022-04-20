@@ -17,10 +17,10 @@ class SubscribeController extends Controller
      */
     public function subscribe(Request $request)
     {
-        if(empty($request) || $request == null || empty($request->user) || empty($request->website))
-            return response()->json([
-                'error' => 'All fields are required',
-            ], 404);
+        $request->validate([
+            'user' => 'required',
+            'website' => 'required',
+        ]);
 
         if(InputValidator::getWebsiteName($request->website) && InputValidator::getUserName($request->user)){
             return Subscription::create([

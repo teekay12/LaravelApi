@@ -14,9 +14,11 @@ class CreateSubscriptionsTable extends Migration
     public function up()
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('website_id')->unsigned();
+            $table->bigIncrements('id');
+            //$table->bigInteger('user_id')->unsigned();
+            $table->foreignId('user_id')->constrained();
+            //$table->bigInteger('website_id')->unsigned();
+            $table->foreignId('website_id')->constrained();
             $table->timestamps();
         });
     }

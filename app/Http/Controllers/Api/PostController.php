@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use App\Services\InputValidator;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Jobs\NewPost;
@@ -39,10 +40,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        if(empty($request) || $request == null || empty($request->title) || empty($request->description))
-            return response()->json([
-                'error' => 'All fields are required',
-            ], 404);
+        $validator = Validator::make($request->all(), [
+            'website'=> 'required',
+            'title' => 'required',
+            'description' => 'required|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors);
+        }
 
         if(InputValidator::getWebsiteName($request->website)){
             $websiteId = InputValidator::getWebsiteID($request->website);
@@ -54,15 +61,13 @@ class PostController extends Controller
                 'description' => $request->description
             ]);
 
-            $emails = InputValidator::getEmails($websiteId);
             $input = [
                 'title' => $request->title,
-                'description' => $request->description
+                'description' => $request->description,
+                'website_id' => $websiteId
             ];
 
-            if($emails != null){
-                NewPost::dispatch($emails, $input)->delay(now());
-            }
+            NewPost::dispatch($input)->delay(now());
 
             return $data;
         }else{
